@@ -1,0 +1,16 @@
+-- Table: app.category
+
+-- DROP TABLE IF EXISTS app.category;
+
+CREATE TABLE IF NOT EXISTS app.category
+(
+    id bigint NOT NULL,
+    name character varying COLLATE pg_catalog."default" NOT NULL,
+    dt_create timestamp(3) without time zone NOT NULL,
+    dt_update timestamp(3) without time zone,
+    CONSTRAINT category_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS app.category

@@ -1,0 +1,22 @@
+-- Table: app.product
+
+-- DROP TABLE IF EXISTS app.product;
+
+CREATE TABLE IF NOT EXISTS app.product
+(
+    id bigint NOT NULL,
+    name character varying COLLATE pg_catalog."default" NOT NULL,
+    price numeric(10,2),
+    category bigint NOT NULL,
+    dt_create timestamp(3) without time zone NOT NULL,
+    dt_update timestamp(3) without time zone,
+    CONSTRAINT product_pkey PRIMARY KEY (id),
+    CONSTRAINT category_fk FOREIGN KEY (category)
+        REFERENCES app.category (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS app.product
