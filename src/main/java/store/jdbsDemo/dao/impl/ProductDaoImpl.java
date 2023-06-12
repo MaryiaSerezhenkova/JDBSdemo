@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,29 +16,44 @@ import store.jdbsDemo.domain.entity.Product;
 
 public class ProductDaoImpl implements ProductDao {
 
-	@Override
-	public long create(Product p) {
-		// TODO Auto-generated method stub
-		return 0;
+	private static final String INSERT_SQL = "INSERT INTO app.product id, dt_create, dt_update, name, price, category (?, ?, ?, ?, ?);";
+
+	private static final String SELECT_BY_ID_SQL = "Select * from app.product where id=?;";
+
+	private static final String SELECT_SQL = "Select * from app.product;";
+
+	private static final String UPDATE_SQL = "UPDATE app.product\r\n"
+			+ "	SET id=?, dt_create=?, dt_update=?, name=?, price=?, catrgory=?\r\n"
+			+ "\tWHERE id = ? and dt_update = ?;";
+
+	private static final String DELETE_SQL = "DELETE FROM app.product WHERE id = ? and dt_update = ?;";
+
+	public Product create(Product p) {
+		try {
+			Connection o = getConnection();
+			PreparedStatement s = o.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
+			s.setString(1, p.getName());
+			s.setDouble(2, p.getPrice());
+			s.setLong(3, p.getCategoryId());
+			s.setObject(4, p.getDtCreate());
+			s.setObject(5, p.getDtUpdate());
+			
+			int updated = s.executeUpdate();
+			return get(s.getGeneratedKeys().getLong(1));
+		} catch (SQLException e) {
+			throw new RuntimeException("При сохранении данных произошла ошибка", e);
+		}
 	}
 
-	@Override
-	public long update(Product p) {
+	public Product update(Product p) {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
-	@Override
-	public void delete(long id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public Product get(long id) {
 		try {
 			Connection o = getConnection();
-			PreparedStatement s = o.prepareStatement("Select * from app.product where id=?");
+			PreparedStatement s = o.prepareStatement(SELECT_BY_ID_SQL);
 			s.setLong(1, id);
 			ResultSet rs = s.executeQuery();
 			if (rs.next()) {
@@ -57,13 +73,12 @@ public class ProductDaoImpl implements ProductDao {
 		return null;
 	}
 
-	@Override
 	public List<Product> getAll() {
 		try {
 			Connection o = getConnection();
 			Statement s = o.createStatement();
-			ResultSet rs = s.executeQuery("Select * from app.product");
-			List<Product> list = new ArrayList<>();
+			ResultSet rs = s.executeQuery(SELECT_SQL);
+			List<Product> list = new ArrayList<Product>();
 			while (rs.next()) {
 				Product p = new Product();
 				p.setId(rs.getLong("id"));
@@ -85,4 +100,24 @@ public class ProductDaoImpl implements ProductDao {
 		return HikariCPDataSource.getConnection();
 	}
 
+	public void delete(long id, LocalDateTime dtUpdate) {
+		try {
+			Connection o = getConnection();
+			PreparedStatement s = o.prepareStatement(DELETE_SQL, Statement.RETURN_GENERATED_KEYS);
+			s.setLong(1, id);
+			s.setObject(2, dtUpdate);
+
+			int countUpdatedRows = s.executeUpdate();
+
+			if (countUpdatedRows != 1) {
+				if (countUpdatedRows == 0) {
+					throw new IllegalArgumentException("Не смогли удалить какую либо запись");
+				} else {
+					throw new IllegalArgumentException("Удалили более одной записи");
+				}
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException("При сохранении данных произошла ошибка", e);
+		}
+	}
 }
