@@ -1,5 +1,7 @@
 package store.jdbsDemo.dbo;
 
+import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -27,5 +29,13 @@ public class HikariCPDataSource {
 
 	private HikariCPDataSource() {
 
+	}
+	public static HikariDataSource getInstance() throws IOException, SQLException, PropertyVetoException {
+		if (ds == null) {
+			synchronized (HikariCPDataSource.class) {
+				ds = new HikariDataSource(config);
+			}
+		}
+		return ds;
 	}
 }

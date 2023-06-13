@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import store.jdbsDemo.dao.ProductDao;
 import store.jdbsDemo.dbo.HikariCPDataSource;
 import store.jdbsDemo.domain.entity.Product;
@@ -27,6 +29,14 @@ public class ProductDaoImpl implements ProductDao {
 			+ "\tWHERE id = ? and dt_update = ?;";
 
 	private static final String DELETE_SQL = "DELETE FROM app.product WHERE id = ? and dt_update = ?;";
+
+	public ProductDaoImpl(HikariDataSource instance) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ProductDaoImpl() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public Product create(Product p) {
 		try {

@@ -19,13 +19,14 @@ import store.jdbsDemo.domain.validator.JsonConverter;
 import store.jdbsDemo.domain.validator.ProductValidator;
 import store.jdbsDemo.domain.validator.ValidationException;
 import store.jdbsDemo.service.ProductService;
+import store.jdbsDemo.service.impl.ProductServiceSingleton;
 
 @WebServlet(name = "ProductServlet", urlPatterns = "/product")
 public class ProductServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private final ProductService productService;
-	private final ProductValidator productValidator;
+	private final ProductService productService = ProductServiceSingleton.getInstance();
+	private final ProductValidator productValidator = new ProductValidator();
 	private static final String CONTENT_TYPE = "application/json";
 	private static final String ENCODING = "UTF-8";
 	private static final String PARAMETER_ID = "id";
@@ -33,10 +34,9 @@ public class ProductServlet extends HttpServlet {
 	private final ObjectMapper mapper = ObjectMapperFactory.getObjectMapper();
 	
 
-	public ProductServlet(ProductService productService, ProductValidator productValidator) {
+	public ProductServlet() {
 		super();
-		this.productService = productService;
-		this.productValidator = productValidator;
+		
 	}
 
 
@@ -91,31 +91,31 @@ public class ProductServlet extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//		try {
-//			resp.setCharacterEncoding(ENCODING);
-//			resp.setContentType(CONTENT_TYPE);
-//			String id = req.getParameter(PARAMETER_ID);
-//			String version = req.getParameter(PARAMETER_VERSION);
-//			String jsonString = req.getReader().lines().collect(Collectors.joining());
-//			 
-//			if (id != null && version != null) {
-//				ProductDto dto = mapper.readValue(jsonString, ProductDto.class);
-//				try {
-//					productValidator.validate(dto);
-//				} catch (ValidationException e) {
-//					resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//				}
-//				Product p = pizzaInfoService.update(Long.parseLong(id),
-//						JsonConverter.convert(Long.parseLong(version)), dto);
-//				resp.getWriter().write(mapper.registerModule(new JavaTimeModule()).writeValueAsString(p));
-//				resp.setStatus(HttpServletResponse.SC_CREATED);
-//			} else {
-//				resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
-//			}
-//
-//		} catch (Exception e) {
-//			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//		}
+		try {
+			resp.setCharacterEncoding(ENCODING);
+			resp.setContentType(CONTENT_TYPE);
+			String id = req.getParameter(PARAMETER_ID);
+			String version = req.getParameter(PARAMETER_VERSION);
+			String jsonString = req.getReader().lines().collect(Collectors.joining());
+			 
+			if (id != null && version != null) {
+				ProductDto dto = mapper.readValue(jsonString, ProductDto.class);
+				try {
+					productValidator.validate(dto);
+				} catch (ValidationException e) {
+					resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				}
+				Product p = productService.update(Long.parseLong(id),
+						JsonConverter.convert(Long.parseLong(version)), dto);
+				resp.getWriter().write(mapper.registerModule(new JavaTimeModule()).writeValueAsString(p));
+				resp.setStatus(HttpServletResponse.SC_CREATED);
+			} else {
+				resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			}
+
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	
