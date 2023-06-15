@@ -17,12 +17,6 @@ public class ProductServiceImpl implements ProductService{
 		this.prodDao = prodDao;
 	}
 
-	public Product create(Product item) {
-		item.setDtCreate(LocalDateTime.now());
-		item.setDtUpdate(item.getDtCreate());
-		return prodDao.create(item);
-	}
-
 	public Product read(long id) {
 		return prodDao.get(id);
 	}
@@ -64,5 +58,7 @@ public class ProductServiceImpl implements ProductService{
 		return null;
 	}
 	
-
+	public List<Product> getByCategory(long categoryId)  {
+		return null;
+	}
 }

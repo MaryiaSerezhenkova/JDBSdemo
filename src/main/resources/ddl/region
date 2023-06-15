@@ -1,0 +1,16 @@
+-- Table: app.region
+
+-- DROP TABLE IF EXISTS app.region;
+
+CREATE TABLE IF NOT EXISTS app.region
+(
+    id bigint NOT NULL DEFAULT nextval('app.region_id_seq'::regclass),
+    name character varying COLLATE pg_catalog."default" NOT NULL,
+    dt_create timestamp(3) without time zone NOT NULL,
+    dt_update timestamp(3) without time zone,
+    CONSTRAINT region_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS app.region

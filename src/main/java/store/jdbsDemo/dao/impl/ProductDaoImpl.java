@@ -29,6 +29,9 @@ public class ProductDaoImpl implements ProductDao {
 			+ "\tWHERE id = ? and dt_update = ?;";
 
 	private static final String DELETE_SQL = "DELETE FROM app.product WHERE id = ? and dt_update = ?;";
+	
+	private static final String SELECT_PRODUCTS_BY_CATEGORY_ID_SQL = "SELECT product.id, product.name, product.price, product.category, product.dt_create, product.dt_update\n"
+			+ "	FROM app.product JOIN app.category ON product.category=category.id WHERE category=?;";
 
 	public ProductDaoImpl(HikariDataSource instance) {
 		// TODO Auto-generated constructor stub
@@ -42,12 +45,11 @@ public class ProductDaoImpl implements ProductDao {
 		try {
 			Connection o = getConnection();
 			PreparedStatement s = o.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
-			s.setString(1, p.getName());
-			s.setDouble(2, p.getPrice());
-			s.setLong(3, p.getCategoryId());
-			s.setObject(4, p.getDtCreate());
-			s.setObject(5, p.getDtUpdate());
-			
+			s.setObject(1, p.getDtCreate());
+			s.setObject(2, p.getDtUpdate());
+			s.setString(3, p.getName());
+			s.setDouble(4, p.getPrice());
+			s.setLong(5, p.getCategoryId());
 			int updated = s.executeUpdate();
 			return get(s.getGeneratedKeys().getLong(1));
 		} catch (SQLException e) {
@@ -105,6 +107,32 @@ public class ProductDaoImpl implements ProductDao {
 		}
 		return Collections.emptyList();
 	}
+	public List<Product> getByCategory(long categoryId) {
+		try {
+			Connection o = getConnection();
+			PreparedStatement s = o.prepareStatement(SELECT_PRODUCTS_BY_CATEGORY_ID_SQL);
+			s.setLong(1, categoryId);
+			ResultSet rs = s.executeQuery();
+			List<Product> list = new ArrayList<Product>();
+			while (rs.next()) {
+				Product p = new Product();
+				if (rs.getLong("category")==categoryId) {
+				p.setId(rs.getLong("id"));
+				p.setName(rs.getString("name"));
+				p.setPrice(rs.getDouble("price"));
+				p.setCategoryId(rs.getLong("category"));
+				p.setDtCreate(rs.getTimestamp("dt_create").toLocalDateTime());
+				p.setDtUpdate(rs.getTimestamp("dt_update").toLocalDateTime());
+				list.add(p);
+			}
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Collections.emptyList();
+	}
+
 
 	private Connection getConnection() throws SQLException {
 		return HikariCPDataSource.getConnection();
