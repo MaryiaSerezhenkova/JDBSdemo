@@ -18,7 +18,7 @@ import store.jdbsDemo.domain.entity.Product;
 
 public class ProductDaoImpl implements ProductDao {
 
-	private static final String INSERT_SQL = "INSERT INTO app.product id, dt_create, dt_update, name, price, category (?, ?, ?, ?, ?);";
+	private static final String INSERT_SQL = "INSERT INTO app.product (dt_create, dt_update, name, price, category) values (?, ?, ?, ?, ?);";
 
 	private static final String SELECT_BY_ID_SQL = "Select * from app.product where id=?;";
 
@@ -51,7 +51,11 @@ public class ProductDaoImpl implements ProductDao {
 			s.setDouble(4, p.getPrice());
 			s.setLong(5, p.getCategoryId());
 			int updated = s.executeUpdate();
-			return get(s.getGeneratedKeys().getLong(1));
+			ResultSet rs = s.getGeneratedKeys();
+			if (rs.next()) {
+				return get(rs.getLong(1));
+			}
+			return null;
 		} catch (SQLException e) {
 			throw new RuntimeException("При сохранении данных произошла ошибка", e);
 		}

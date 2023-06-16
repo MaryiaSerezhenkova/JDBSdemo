@@ -18,7 +18,7 @@ import store.jdbsDemo.domain.entity.Region;
 
 public class RegionDaoImpl implements RegionDao {
 
-	private static final String INSERT_SQL = "INSERT INTO app.region id, dt_create, dt_update, name  (?, ?, ?, ?);";
+	private static final String INSERT_SQL = "INSERT INTO app.region (dt_create, dt_update, name) values  (?, ?, ?);";
 
 	private static final String SELECT_BY_ID_SQL = "Select * from app.region where id=?;";
 
@@ -37,7 +37,11 @@ public class RegionDaoImpl implements RegionDao {
 			s.setObject(2, r.getDtUpdate());
 			s.setString(3, r.getName());
 			int updated = s.executeUpdate();
-			return get(s.getGeneratedKeys().getLong(1));
+			ResultSet rs = s.getGeneratedKeys();
+			if (rs.next()) {
+				return get(rs.getLong(1));
+			}
+			return null;
 		} catch (SQLException e) {
 			throw new RuntimeException("При сохранении данных произошла ошибка", e);
 		}
