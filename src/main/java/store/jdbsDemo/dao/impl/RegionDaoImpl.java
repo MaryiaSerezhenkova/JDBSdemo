@@ -14,6 +14,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import store.jdbsDemo.dao.RegionDao;
 import store.jdbsDemo.dbo.HikariCPDataSource;
 import store.jdbsDemo.domain.entity.Category;
+import store.jdbsDemo.domain.entity.Product;
 import store.jdbsDemo.domain.entity.Region;
 
 public class RegionDaoImpl implements RegionDao {
@@ -23,6 +24,12 @@ public class RegionDaoImpl implements RegionDao {
 	private static final String SELECT_BY_ID_SQL = "Select * from app.region where id=?;";
 
 	private static final String SELECT_SQL = "Select * from app.region;";
+
+	private static final String SELECT_ALL_PRODUCTS = "SELECT region.id, region.name, region.dt_create, region.dt_update, product.id, product.name, product.price, product.category, product.dt_create, product.dt_update\r\n"
+			+ "	FROM app.product JOIN app.product_region ON product.id=product_region.product_id JOIN app.region ON region.id=product_region.region_id;";
+	private static final String SELECT_BY_REGION = "SELECT region.id, product.id, product.name, product.price, product.category, product.dt_create, product.dt_update\r\n"
+			+ "	FROM app.product JOIN app.product_region ON product.id=product_region.product_id JOIN app.region ON region.id=product_region.region_id \r\n"
+			+ "	WHERE region.id=? ;";
 
 	public RegionDaoImpl(HikariDataSource instance) {
 		// TODO Auto-generated constructor stub
@@ -93,6 +100,51 @@ public class RegionDaoImpl implements RegionDao {
 
 	private Connection getConnection() throws SQLException {
 		return HikariCPDataSource.getConnection();
+	}
+
+	public void getByRegion(long regionId) {
+		try {
+			Connection o = getConnection();
+			PreparedStatement s = o.prepareStatement(SELECT_BY_REGION);
+			s.setLong(1, regionId);
+			List<Product> list = new ArrayList<Product>();
+			ResultSet rs = s.executeQuery();
+			while (rs.next()) {
+				Product p = new Product();
+				p.setId(rs.getLong("id"));
+				p.setName(rs.getString("name"));
+				p.setPrice(rs.getDouble("price"));
+				p.setCategoryId(rs.getLong("category"));
+				p.setDtCreate(rs.getTimestamp("dt_create").toLocalDateTime());
+				p.setDtUpdate(rs.getTimestamp("dt_update").toLocalDateTime());
+				list.add(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public List<Product> getStore( ) {
+		try {
+			Connection o = getConnection();
+			PreparedStatement s = o.prepareStatement(SELECT_ALL_PRODUCTS);
+			List<Product> list = new ArrayList<Product>();
+			ResultSet rs = s.executeQuery();
+			while (rs.next()) {
+				Product p = new Product();
+				p.setId(rs.getLong("id"));
+				p.setName(rs.getString("name"));
+				p.setPrice(rs.getDouble("price"));
+				p.setCategoryId(rs.getLong("category"));
+				p.setDtCreate(rs.getTimestamp("dt_create").toLocalDateTime());
+				p.setDtUpdate(rs.getTimestamp("dt_update").toLocalDateTime());
+				list.add(p);
+				
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Collections.emptyList();
 	}
 
 }

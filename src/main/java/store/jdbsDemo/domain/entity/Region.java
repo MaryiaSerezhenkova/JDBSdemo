@@ -1,7 +1,9 @@
 package store.jdbsDemo.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -22,6 +24,9 @@ public @Data class Region implements IEntity {
 	@JsonDeserialize(using = CustomLocalDateTimeDesSerializer.class)
 	private LocalDateTime dtUpdate;
 	private String name;
+	@JsonIgnore
+    private List<Product> productList;
+
 	
 
 	public long getId() {

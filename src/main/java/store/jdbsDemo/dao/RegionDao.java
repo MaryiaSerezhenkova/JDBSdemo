@@ -7,6 +7,10 @@ import store.jdbsDemo.domain.entity.Region;
 public interface RegionDao {
 
 	Region create(Region r);
-	Region get (long id);
+
+	Region get(long id);
+
 	List<Region> getAll();
+
+	void getByRegion(long regionId);
 }

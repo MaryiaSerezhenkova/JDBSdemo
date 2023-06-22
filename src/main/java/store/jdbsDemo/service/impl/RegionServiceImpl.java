@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import store.jdbsDemo.dao.RegionDao;
-import store.jdbsDemo.domain.entity.Category;
+import store.jdbsDemo.domain.entity.Product;
 import store.jdbsDemo.domain.entity.Region;
 import store.jdbsDemo.domain.entity.dto.RegionDto;
 import store.jdbsDemo.service.RegionService;
@@ -36,6 +36,10 @@ public class RegionServiceImpl implements RegionService {
 	@Override
 	public List<Region> get() {
 		return regDao.getAll();
+	}
+	public void getByRegion(long id) {
+		Region region = regDao.get(id);
+		regDao.getByRegion(region.getId());
 	}
 
 	@Override

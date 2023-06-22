@@ -22,5 +22,4 @@ public class CustomLocalDateTimeSerializer extends StdSerializer<LocalDateTime> 
         gen.writeString(Long.toString(value.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
      //   gen.writeNumber(value.toInstant(Z));
     }
-
 }

@@ -25,7 +25,7 @@ public class ProductDaoImpl implements ProductDao {
 	private static final String SELECT_SQL = "Select * from app.product;";
 
 	private static final String UPDATE_SQL = "UPDATE app.product\r\n"
-			+ "	SET id=?, dt_create=?, dt_update=?, name=?, price=?, catrgory=?\r\n"
+			+ "	SET dt_update=?, name=?, price=?, category=?\r\n"
 			+ "\tWHERE id = ? and dt_update = ?;";
 
 	private static final String DELETE_SQL = "DELETE FROM app.product WHERE id = ? and dt_update = ?;";
@@ -61,10 +61,7 @@ public class ProductDaoImpl implements ProductDao {
 		}
 	}
 
-	public Product update(Product p) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	public Product get(long id) {
 		try {
@@ -120,7 +117,6 @@ public class ProductDaoImpl implements ProductDao {
 			List<Product> list = new ArrayList<Product>();
 			while (rs.next()) {
 				Product p = new Product();
-				if (rs.getLong("category")==categoryId) {
 				p.setId(rs.getLong("id"));
 				p.setName(rs.getString("name"));
 				p.setPrice(rs.getDouble("price"));
@@ -128,7 +124,6 @@ public class ProductDaoImpl implements ProductDao {
 				p.setDtCreate(rs.getTimestamp("dt_create").toLocalDateTime());
 				p.setDtUpdate(rs.getTimestamp("dt_update").toLocalDateTime());
 				list.add(p);
-			}
 			}
 			return list;
 		} catch (SQLException e) {
@@ -162,4 +157,33 @@ public class ProductDaoImpl implements ProductDao {
 			throw new RuntimeException("При сохранении данных произошла ошибка", e);
 		}
 	}
+
+	@Override
+	public Product update(long id, LocalDateTime dtUpdate, Product p) {
+		try {
+			Connection o = getConnection();
+			PreparedStatement s = o.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
+			s.setObject(1, p.getDtUpdate());
+			s.setString(2, p.getName());
+			s.setDouble(3, p.getPrice());
+			s.setLong(4, p.getCategoryId());
+			s.setLong(5, id);
+			s.setObject(6, dtUpdate);
+
+			int countUpdatedRows = s.executeUpdate();
+
+			if (countUpdatedRows != 1) {
+				if (countUpdatedRows == 0) {
+					throw new IllegalArgumentException("Не смогли обновить какую либо запись");
+				} else {
+					throw new IllegalArgumentException("Обновили более одной записи");
+				}
+			}
+
+			return get(id);
+		} catch (SQLException e) {
+			throw new RuntimeException("При сохранении данных произошла ошибка", e);
+		}
+	}
+	
 }

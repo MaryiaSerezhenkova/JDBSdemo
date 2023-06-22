@@ -8,8 +8,8 @@ import store.jdbsDemo.domain.entity.Product;
 import store.jdbsDemo.domain.entity.dto.ProductDto;
 import store.jdbsDemo.service.ProductService;
 
-public class ProductServiceImpl implements ProductService{
-	
+public class ProductServiceImpl implements ProductService {
+
 	private final ProductDao prodDao;
 
 	public ProductServiceImpl(ProductDao prodDao) {
@@ -25,7 +25,6 @@ public class ProductServiceImpl implements ProductService{
 		return prodDao.getAll();
 	}
 
-
 	public void delete(long id, LocalDateTime dtUpdate) {
 		Product readed = prodDao.get(id);
 		if (readed == null) {
@@ -37,7 +36,7 @@ public class ProductServiceImpl implements ProductService{
 		}
 
 		prodDao.delete(id, dtUpdate);
-		
+
 	}
 
 	@Override
@@ -50,15 +49,27 @@ public class ProductServiceImpl implements ProductService{
 		p.setDtUpdate(p.getDtCreate());
 		return prodDao.create(p);
 	}
-	
 
 	@Override
 	public Product update(long id, LocalDateTime dtUpdate, ProductDto item) {
-		// TODO Auto-generated method stub
-		return null;
+		Product readed = prodDao.get(id);
+
+		if (readed == null) {
+			throw new IllegalArgumentException("Позиция не найдена");
+		}
+
+		if (!readed.getDtUpdate().isEqual(dtUpdate)) {
+			throw new IllegalArgumentException("К сожалению позиция уже была отредактирована кем-то другим");
+		}
+
+		readed.setDtUpdate(LocalDateTime.now());
+		readed.setName(item.getName());
+		readed.setCategoryId(item.getCategoryId());
+
+		return prodDao.update(id, dtUpdate, readed);
 	}
-	
-	public List<Product> getByCategory(long categoryId)  {
-		return null;
+
+	public List<Product> getByCategory(long categoryId) {
+		return prodDao.getByCategory(categoryId);
 	}
 }

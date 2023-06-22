@@ -36,9 +36,8 @@ public class ProductServlet extends HttpServlet {
 
 	public ProductServlet() {
 		super();
-		
 	}
-
+	
 
 	// 1) Read list
 	// 2) Read item (card) need id param
@@ -47,6 +46,7 @@ public class ProductServlet extends HttpServlet {
 		resp.setContentType(CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING);
 		String id = req.getParameter(PARAMETER_ID);
+		String categoryId = req.getParameter("categoryId");
 		try {
 
 			if (id != null) {
@@ -56,7 +56,17 @@ public class ProductServlet extends HttpServlet {
 				} else {
 					resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 				}
-			} else {
+			} 
+			if(categoryId !=null) {
+				if (Long.valueOf(categoryId) > 0) {
+					resp.getWriter().write(mapper.writeValueAsString(productService.getByCategory(Long.valueOf(categoryId))));
+					resp.setStatus(HttpServletResponse.SC_OK);
+				} else {
+					resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+				}
+			} 
+				
+			else {
 				resp.getWriter()
 						.write(mapper.registerModule(new JavaTimeModule()).writeValueAsString(productService.get()));
 				resp.setStatus(HttpServletResponse.SC_OK);
@@ -88,6 +98,7 @@ public class ProductServlet extends HttpServlet {
 			System.err.println(e);
 		}
 	}
+
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
