@@ -1,26 +1,13 @@
--- Table: app.storage
-
--- DROP TABLE IF EXISTS app.storage;
-
-CREATE TABLE IF NOT EXISTS app.storage
+CREATE TABLE IF NOT EXISTS app.product_region
 (
-    id bigint NOT NULL,
-    product bigint NOT NULL,
-    region bigint NOT NULL,
-    quantity bigint,
-    dt_create timestamp(3) without time zone NOT NULL,
-    dt_update timestamp(3) without time zone,
-    CONSTRAINT storage_pkey PRIMARY KEY (id),
-    CONSTRAINT product_fk FOREIGN KEY (product)
+    product_id bigint NOT NULL,
+    region_id bigint NOT NULL,
+    CONSTRAINT product_fk FOREIGN KEY (product_id)
         REFERENCES app.product (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
-    CONSTRAINT region_fk FOREIGN KEY (region)
+    CONSTRAINT region_fk FOREIGN KEY (region_id)
         REFERENCES app.region (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS app.storage

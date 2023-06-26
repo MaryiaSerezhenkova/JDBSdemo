@@ -37,10 +37,6 @@ public class RegionServiceImpl implements RegionService {
 	public List<Region> get() {
 		return regDao.getAll();
 	}
-	public void getByRegion(long id) {
-		Region region = regDao.get(id);
-		regDao.getByRegion(region.getId());
-	}
 
 	@Override
 	public Region update(long id, LocalDateTime dtUpdate, RegionDto item) {
@@ -53,8 +49,23 @@ public class RegionServiceImpl implements RegionService {
 		// TODO Auto-generated method stub
 		
 	}
-	
 
-	
+	@Override
+	public List<Region> getStore() {
+		return regDao.getStore();
+	}
+
+	@Override
+	public void createStore(long productId, long regionId) {
+		regDao.createStore(productId, regionId);
+	}
+
+
+	@Override
+	public List<Product> getProductsByRegion(long regionId) {
+		return regDao.getProductsByRegion(regionId);
+	}
+
+
 
 }

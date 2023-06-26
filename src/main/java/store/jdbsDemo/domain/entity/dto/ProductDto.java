@@ -8,5 +8,11 @@ public @Data class ProductDto {
 	private double price;
 	private long categoryId;
 
-	
+	public ProductDto(String name, double price, long categoryId) {
+		super();
+		this.name = name;
+		this.price = price;
+		this.categoryId = categoryId;
+	}
+
 }

@@ -1,6 +1,4 @@
--- Table: app.region
 
--- DROP TABLE IF EXISTS app.region;
 
 CREATE TABLE IF NOT EXISTS app.region
 (
@@ -11,6 +9,4 @@ CREATE TABLE IF NOT EXISTS app.region
     CONSTRAINT region_pkey PRIMARY KEY (id)
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS app.region
+T
