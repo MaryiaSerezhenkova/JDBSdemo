@@ -57,7 +57,7 @@ public class ProductServlet extends HttpServlet {
 					resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 				}
 			} 
-			if(categoryId !=null) {
+			else if(categoryId !=null) {
 				if (Long.valueOf(categoryId) > 0) {
 					resp.getWriter().write(mapper.writeValueAsString(productService.getByCategory(Long.valueOf(categoryId))));
 					resp.setStatus(HttpServletResponse.SC_OK);

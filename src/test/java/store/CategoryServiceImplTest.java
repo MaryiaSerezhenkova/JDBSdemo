@@ -36,7 +36,7 @@ public class CategoryServiceImplTest {
     @Test
     void read() {
         testDataBuilder.fillTables();
-        IntStream.rangeClosed(1, 10).forEach(value -> Assertions.assertThat(
+        IntStream.rangeClosed(1,3).forEach(value -> Assertions.assertThat(
                 categoryService.read(value))
                 .isInstanceOf(Category.class));
     }

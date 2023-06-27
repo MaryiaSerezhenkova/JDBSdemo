@@ -36,14 +36,6 @@ public class CategoryServiceImpl implements CategoryService {
 		return catDao.getAll();
 	}
 
-	@Override
-	public Category update(long id, LocalDateTime dtUpdate, CategoryDto item) {
-		return null;
-	}
-
-	@Override
-	public void delete(long id, LocalDateTime dtUpdate) {
-		
-	}
+	
 
 }

@@ -1,8 +1,25 @@
-CREATE TABLE IF NOT EXISTS category
-(id SERIAL NOT NULL,
-name character VARCHAR (64) NOT NULL,
-dt_create timestamp (3) without time zone,
-dt_update timestamp (3) without time zone,
-CONSTRAINT category_pkey PRIMARY KEY (id))
+CREATE SCHEMA IF NOT EXISTS app;
 
+CREATE TABLE IF NOT EXISTS app.category
+(id SERIAL NOT NULL CONSTRAINT category_pkey PRIMARY KEY, 
+name VARCHAR(64) NOT NULL, 
+dt_create TIMESTAMP(3) NOT NULL,
+dt_update TIMESTAMP(3) NOT NULL);
 
+CREATE TABLE IF NOT EXISTS app.product
+(id SERIAL NOT NULL CONSTRAINT product_pkey PRIMARY KEY, 
+name VARCHAR(64) NOT NULL, 
+price NUMERIC(10,2) NOT NULL,
+category INTEGER NOT NULL,
+dt_create TIMESTAMP(3) NOT NULL,
+dt_update TIMESTAMP(3) NOT NULL);
+
+CREATE TABLE IF NOT EXISTS app.region
+(id SERIAL NOT NULL CONSTRAINT region_pkey PRIMARY KEY, 
+name VARCHAR(64) NOT NULL, 
+dt_create TIMESTAMP(3) NOT NULL,
+dt_update TIMESTAMP(3) NOT NULL);
+
+CREATE TABLE IF NOT EXISTS app.product_region
+(product_id INTEGER NOT NULL CONSTRAINT product_fk REFERENCES app.product,
+ region_id INTEGER NOT NULL CONSTRAINT region_fk REFERENCES app.region);
