@@ -6,29 +6,38 @@ import java.util.List;
 import store.jdbsDemo.dao.CategoryDao;
 import store.jdbsDemo.domain.entity.Category;
 import store.jdbsDemo.domain.entity.dto.CategoryDto;
+import store.jdbsDemo.domain.entity.mapper.impl.CategoryMapper;
 import store.jdbsDemo.service.CategoryService;
 
 public class CategoryServiceImpl implements CategoryService {
 	
 	private final CategoryDao catDao;
+	private CategoryMapper mapper;
 	
 
 	public CategoryServiceImpl(CategoryDao catDao) {
 		super();
 		this.catDao = catDao;
 	}
+	
+	public CategoryServiceImpl(CategoryDao catDao, CategoryMapper mapper) {
+		super();
+		this.catDao = catDao;
+		this.mapper = mapper;
+	}
+
 	@Override
-	public Category create(CategoryDto item) {
+	public CategoryDto create(CategoryDto item) {
 		Category c = new Category();
 		c.setName(item.getName());
 		c.setDtCreate(LocalDateTime.now());
 		c.setDtUpdate(c.getDtCreate());
-		return catDao.create(c);
+		return mapper.toDTO(catDao.create(c));
 	}
 
 	@Override
-	public Category read(long id) {
-		return catDao.get(id);
+	public CategoryDto read(long id) {
+		return mapper.toDTO(catDao.get(id));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package store.jdbsDemo.service.impl;
 
 import store.jdbsDemo.dao.impl.CategoryDaoSingleton;
+import store.jdbsDemo.domain.entity.mapper.impl.CategoryMapper;
 import store.jdbsDemo.service.CategoryService;
 
 public class CategoryServiceSingleton {
@@ -8,7 +9,7 @@ public class CategoryServiceSingleton {
 	    private volatile static CategoryServiceSingleton firstInstance = null;
 
 	    public CategoryServiceSingleton() {
-	        this.categoryService = new CategoryServiceImpl(CategoryDaoSingleton.getInstance());
+	        this.categoryService = new CategoryServiceImpl(CategoryDaoSingleton.getInstance(), new CategoryMapper());
 	    }
 
 	    public static CategoryService getInstance() {

@@ -6,19 +6,26 @@ import java.util.List;
 import store.jdbsDemo.dao.ProductDao;
 import store.jdbsDemo.domain.entity.Product;
 import store.jdbsDemo.domain.entity.dto.ProductDto;
+import store.jdbsDemo.domain.entity.mapper.impl.ProductMapper;
 import store.jdbsDemo.service.ProductService;
 
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductDao prodDao;
+	private ProductMapper mapper;
 
 	public ProductServiceImpl(ProductDao prodDao) {
 		super();
 		this.prodDao = prodDao;
 	}
+	public ProductServiceImpl(ProductDao prodDao, ProductMapper mapper) {
+		super();
+		this.prodDao = prodDao;
+		this.mapper = mapper;
+	}
 
-	public Product read(long id) {
-		return prodDao.get(id);
+	public ProductDto read(long id) {
+		return mapper.toDTO(prodDao.get(id));
 	}
 
 	public List<Product> get() {
@@ -39,19 +46,10 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 
-	@Override
-	public Product create(ProductDto item) {
-		Product p = new Product();
-		p.setName(item.getName());
-		p.setPrice(item.getPrice());
-		p.setCategoryId(item.getCategoryId());
-		p.setDtCreate(LocalDateTime.now());
-		p.setDtUpdate(p.getDtCreate());
-		return prodDao.create(p);
-	}
+	
 
 	@Override
-	public Product update(long id, LocalDateTime dtUpdate, ProductDto item) {
+	public ProductDto update(long id, LocalDateTime dtUpdate, ProductDto item) {
 		Product readed = prodDao.get(id);
 
 		if (readed == null) {
@@ -66,10 +64,21 @@ public class ProductServiceImpl implements ProductService {
 		readed.setName(item.getName());
 		readed.setCategoryId(item.getCategoryId());
 
-		return prodDao.update(id, dtUpdate, readed);
+		return mapper.toDTO(prodDao.update(id, dtUpdate, readed));
 	}
 
 	public List<Product> getByCategory(long categoryId) {
 		return prodDao.getByCategory(categoryId);
 	}
+	public ProductDto create(ProductDto item) {
+		Product p = new Product();
+		p.setName(item.getName());
+		p.setPrice(item.getPrice());
+		p.setCategoryId(item.getCategoryId());
+		p.setDtCreate(LocalDateTime.now());
+		p.setDtUpdate(p.getDtCreate());
+		return mapper.toDTO(prodDao.create(p));
+		
+	}
+	
 }

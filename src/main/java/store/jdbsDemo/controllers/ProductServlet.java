@@ -89,7 +89,7 @@ public class ProductServlet extends HttpServlet {
 			} catch (ValidationException e) {
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
-			Product product = productService.create(dto);
+			ProductDto product = productService.create(dto);
 			resp.getWriter().write(mapper.writeValueAsString(product));
 			resp.setStatus(HttpServletResponse.SC_CREATED);
 
@@ -116,7 +116,7 @@ public class ProductServlet extends HttpServlet {
 				} catch (ValidationException e) {
 					resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				}
-				Product p = productService.update(Long.parseLong(id),
+				ProductDto p = productService.update(Long.parseLong(id),
 						JsonConverter.convert(Long.parseLong(version)), dto);
 				resp.getWriter().write(mapper.registerModule(new JavaTimeModule()).writeValueAsString(p));
 				resp.setStatus(HttpServletResponse.SC_CREATED);

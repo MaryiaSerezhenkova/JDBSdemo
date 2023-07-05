@@ -72,7 +72,7 @@ public class RegionServlet extends HttpServlet {
 			} catch (ValidationException e) {
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
-			Region region = regionService.create(dto);
+			RegionDto region = regionService.create(dto);
 			resp.getWriter().write(mapper.writeValueAsString(region));
 			resp.setStatus(HttpServletResponse.SC_CREATED);
 

@@ -71,7 +71,7 @@ public class CategoryServlet extends HttpServlet {
 			} catch (ValidationException e) {
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
-			Category category = categoryService.create(dto);
+			CategoryDto category = categoryService.create(dto);
 			resp.getWriter().write(mapper.writeValueAsString(category));
 			resp.setStatus(HttpServletResponse.SC_CREATED);
 

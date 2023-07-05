@@ -7,30 +7,40 @@ import store.jdbsDemo.dao.RegionDao;
 import store.jdbsDemo.domain.entity.Product;
 import store.jdbsDemo.domain.entity.Region;
 import store.jdbsDemo.domain.entity.dto.RegionDto;
+import store.jdbsDemo.domain.entity.mapper.impl.RegionMapper;
 import store.jdbsDemo.service.RegionService;
 
 public class RegionServiceImpl implements RegionService {
 	
 	private final RegionDao regDao;
+	private RegionMapper mapper;
 
 	public RegionServiceImpl(RegionDao regDao) {
 		super();
 		this.regDao = regDao;
 	}
+	
+
+	public RegionServiceImpl(RegionDao regDao, RegionMapper mapper) {
+		super();
+		this.regDao = regDao;
+		this.mapper = mapper;
+	}
+
 
 	@Override
-	public Region create(RegionDto item) {
+	public RegionDto create(RegionDto item) {
 		Region r = new Region();
 		r.setName(item.getName());
 		r.setDtCreate(LocalDateTime.now());
 		r.setDtUpdate(r.getDtCreate());
-		return regDao.create(r);
+		return mapper.toDTO(regDao.create(r));
 	}
 
 	@Override
-	public Region read(long id) {
+	public RegionDto read(long id) {
 		
-		return regDao.get(id);
+		return mapper.toDTO(regDao.get(id));
 	}
 
 	@Override
